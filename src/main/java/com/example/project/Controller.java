@@ -41,6 +41,24 @@ public class Controller {
         traderRepo.save(t);
     }
 
+    //edit details of a trader
+    @PostMapping("editTrader")
+    public void editTrader(@RequestBody Trader t){
+       Optional<Trader> t1 = traderRepo.findById(t.getId());
+
+        if(t1.isPresent()) {
+            Trader t2 = t1.get();
+            t2.setName(t.getName());
+            t2.setAccountno(t.getAccountno());
+            t2.setBalance(t.getBalance());
+            traderRepo.save(t2);
+        }
+        else
+        {
+            //trader not present
+        }
+    }
+
     // delete trader by id
     @GetMapping("deleteTrader")
     public void deleteTraderByID(@RequestParam long id){
@@ -66,6 +84,26 @@ public class Controller {
         shareRepo.save(s);
     }
 
+    //edit details of a share
+    @PostMapping("editShare")
+    public void editShare(@RequestBody Share t){
+        Optional<Share> t1 = shareRepo.findById(t.getId());
+
+        if(t1.isPresent()) {
+            Share t2 = t1.get();
+            t2.setCompanyName(t.getCompanyName());
+            t2.setCompanyCode(t.getCompanyCode());
+            t2.setUnitCost(t.getUnitCost());
+            t2.setHighestPrice(t.getHighestPrice());
+            t2.setLowestPrice(t.getLowestPrice());
+            shareRepo.save(t2);
+        }
+        else
+        {
+            //share not present
+        }
+    }
+
     // delete share by id
     @GetMapping("deleteShare")
     public void deleteShareById(@RequestParam long id){
@@ -89,6 +127,24 @@ public class Controller {
     @PostMapping("addTransaction")
     public void addTransaction(@RequestBody Transaction s){
         transactionRepo.save(s);
+    }
+
+    // Get all transactions in a given date
+    @GetMapping("getTransactionsByDate")
+    public List<Transaction> getTransactionsByDate(@RequestParam String date){
+        return transactionRepo.findTransactionsByDateEquals(date);
+    }
+
+    // Get all transactions by a trader
+    @GetMapping("getTransactionsByTraderId")
+    public List<Transaction> getTransactionsByTraderId(@RequestParam long id){
+        Optional<Trader> t = traderRepo.findById(id);
+        if(t.isPresent()) {
+            Trader t1 = t.get();
+            return transactionRepo.findTransactionsByTrader(t1);
+        }
+        else
+            return null;
     }
 
     // delete Transaction by id
